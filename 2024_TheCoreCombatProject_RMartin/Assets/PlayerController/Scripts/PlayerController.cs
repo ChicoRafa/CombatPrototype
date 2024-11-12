@@ -1,34 +1,42 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
-[RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")] [SerializeField] private float speed = 5f;
-    private Vector3 movement;
-    private Vector3 rawMovement;
-    
-    [Header("Orientation")]
-    [SerializeField] float angularVelocity = 360f;
-    [SerializeField] private OrientationMode orientationMode = OrientationMode.CameraDirection;
-    [SerializeField] Transform target;
+    [Header("Movement")]
+    [SerializeField] private float linearAcceleration = 50f;
+    [SerializeField] private float maxRunSpeed = 5f;
+    [SerializeField] private float maxWalkSpeed = 2f;
+    [SerializeField] private float decelerationFactor = 10f;
+
+    [Header("Jump")]
+    [SerializeField] float jumpSpeed = 5f;
+
     public enum OrientationMode
     {
         MovementDirection,
         CameraDirection,
         FaceToTarget
     }
-    Vector3 projectedMovement = Vector3.zero;
-    Vector3 lastMovementDirection = Vector3.zero;
+    [Header("Orientation")]
+    [SerializeField] OrientationMode orientationMode = OrientationMode.MovementDirection;
+    [SerializeField] float angularVelocity = 360f;
+    [SerializeField] Transform target;
+
+    [Header("Combat")] 
+    [SerializeField] private Transform hitCollidersParent;
     
-    [Header("Input Actions")] [SerializeField]
-    InputActionReference movementInputAction;
+    [Header("Inputs Movement")]
+    [SerializeField] InputActionReference moveInputActionReference;
+    [FormerlySerializedAs("jump")] [SerializeField] InputActionReference jumpInputActionReference;
+    [SerializeField] InputActionReference walkInputActionReference;
+    [FormerlySerializedAs("attack")]
+    [Header("Inputs Combat")]
+    [SerializeField] InputActionReference attackInputActionReference;
+    [SerializeField] InputActionReference nextPrevWeapon;
 
-    [SerializeField] InputActionReference jumpInputAction;
-    [SerializeField] InputActionReference attackInputAction;
-    [SerializeField] InputActionReference nextPrevWeaponInputAction;
-
-    public Animator animator;
+    Animator animator;
     CharacterController characterController;
     Camera mainCamera;
 
@@ -39,100 +47,218 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
     }
 
-    private void Update()
-    {
-        UpdateMovement();
-        UpdateOrientation();
-        UpdateAnimation();
-    }
-
-    private void UpdateMovement()
-    {
-        movement = (mainCamera.transform.forward * rawMovement.z) + (mainCamera.transform.right * rawMovement.x);
-        float movementLength = movement.magnitude;
-        //we don't want to move the character up or down
-        projectedMovement = Vector3.ProjectOnPlane(movement, Vector3.up).normalized * movementLength;
-        movement = projectedMovement;
-        //here we move the character
-        characterController.Move(movement * (speed * Time.deltaTime));
-    }
-
-    private void UpdateOrientation()
-    {
-        //here we calculate the desired direction
-        Vector3  desiredDirection = CalculateDesiredDirection();
-        //here we set the desired direction
-        RotateToDesiredDirection(desiredDirection);
-    }
-
-    private void UpdateAnimation()
-    {
-        Vector3 localVelocity = transform.InverseTransformDirection(projectedMovement);
-        animator.SetFloat("HorizontalVelocity", localVelocity.x);
-        animator.SetFloat("ForwardVelocity", localVelocity.z);
-    }
-
-    private Vector3 CalculateDesiredDirection()
-    {
-        Vector3 desiredDirection = Vector3.zero;
-        switch (orientationMode)
-        {
-            case OrientationMode.MovementDirection:
-                if (rawMovement.magnitude < 0.01f)
-                {
-                    desiredDirection = lastMovementDirection;
-                }
-                else
-                {
-                    desiredDirection = projectedMovement;
-                    lastMovementDirection = desiredDirection;
-                }
-                break;
-            case OrientationMode.CameraDirection:
-                desiredDirection = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up);
-                break;
-            case OrientationMode.FaceToTarget:
-                desiredDirection = Vector3.ProjectOnPlane(target.position - transform.position, Vector3.up);
-                break;
-        }
-
-        return desiredDirection;
-    }
-
-    private void RotateToDesiredDirection(Vector3 desiredDirection)
-    {
-        float angularDistance = Vector3.SignedAngle(transform.forward, desiredDirection, Vector3.up);
-        float angleToApply = angularVelocity * Time.deltaTime;
-        angleToApply = Mathf.Min(angleToApply, Mathf.Abs(angularDistance));
-        
-        Quaternion rotationToApply = Quaternion.AngleAxis(angleToApply * Mathf.Sign(angularDistance), Vector3.up);
-
-        transform.rotation = rotationToApply * transform.rotation;
-    }
-
     private void OnEnable()
     {
-        movementInputAction.action.Enable();
+        moveInputActionReference.action.Enable();
 
-        movementInputAction.action.started += OnMove;
-        movementInputAction.action.performed += OnMove;
-        movementInputAction.action.canceled += OnMove;
+        moveInputActionReference.action.started += OnMove;
+        moveInputActionReference.action.performed += OnMove;
+        moveInputActionReference.action.canceled += OnMove;
+
+        jumpInputActionReference.action.Enable();
+        jumpInputActionReference.action.performed += OnJump;
+        
+        walkInputActionReference.action.Enable();
+        walkInputActionReference.action.started += OnWalk;
+        walkInputActionReference.action.canceled += OnWalk;
+        
+        attackInputActionReference.action.Enable();
+        attackInputActionReference.action.performed += OnAttack;
+        
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            animationEventForwarder.onAnimationEvent.AddListener(OnAnimationEvent);
+        }
     }
-
+    
     private void OnDisable()
     {
-        movementInputAction.action.Disable();
+        moveInputActionReference.action.Disable();
 
-        movementInputAction.action.started -= OnMove;
-        movementInputAction.action.performed -= OnMove;
-        movementInputAction.action.canceled -= OnMove;
-    }
+        moveInputActionReference.action.started -= OnMove;
+        moveInputActionReference.action.performed -= OnMove;
+        moveInputActionReference.action.canceled -= OnMove;
 
-    private void OnMove(InputAction.CallbackContext callbackContext)
-    {
-        Vector2 stickValue = callbackContext.ReadValue<Vector2>();
+        jumpInputActionReference.action.Disable();
+        jumpInputActionReference.action.performed -= OnJump;
         
-        //here we set the movement vector
-        rawMovement = (Vector3.forward * stickValue.y) + (Vector3.right * stickValue.x); float movementLength = movement.magnitude;
+        walkInputActionReference.action.Disable();
+        walkInputActionReference.action.started -= OnWalk;
+        walkInputActionReference.action.canceled -= OnWalk;
+        
+        attackInputActionReference.action.Disable();
+        attackInputActionReference.action.performed -= OnAttack;
+        
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            animationEventForwarder.onAnimationEvent.RemoveListener(OnAnimationEvent);
+        }
     }
+    #region Input Events
+    //Inputs
+    Vector3 rawStickValue;
+    private void OnMove(InputAction.CallbackContext ctx)
+    {
+        Vector2 stickValue = ctx.ReadValue<Vector2>();
+
+        rawStickValue = new Vector3(stickValue.x, 0, stickValue.y);
+    }
+
+    bool mustJump = false;
+    private void OnJump(InputAction.CallbackContext ctx)
+    {
+        mustJump = true;
+    }
+    
+    bool isWalking = false;
+    private void OnWalk(InputAction.CallbackContext ctx)
+    {
+        isWalking = ctx.ReadValueAsButton();
+    }
+    
+    bool mustAttack = false;
+    private void OnAttack(InputAction.CallbackContext ctx)
+    {
+        mustAttack = true;
+    }
+    #endregion
+
+    private void Update()
+    {
+        Vector3 compositeMovement = Vector3.zero;
+        compositeMovement += UpdateMovementOnPlane();
+        compositeMovement += UpdateVerticalMovement();
+
+        characterController.Move(compositeMovement);
+
+        UpdateOrientation();
+        UpdateAnimation();
+        UpdateCombat();
+    }
+
+    #region Movement
+    Vector3 velocityOnPlane = Vector3.zero;
+    private Vector3 UpdateMovementOnPlane()
+    {
+        // Acceleration
+        Vector3 acceleration = (mainCamera.transform.forward * rawStickValue.z) + (mainCamera.transform.right * rawStickValue.x);
+        float accelerationLength = acceleration.magnitude;
+        Vector3 projectedAcceleration = Vector3.ProjectOnPlane(acceleration, Vector3.up).normalized * accelerationLength;
+        Vector3 deltaAccelerationOnPlane = projectedAcceleration * (linearAcceleration * Time.deltaTime);
+
+        // Account for max speed
+        float maxSpeed = CalculateMaxSpeed();
+        float currentSpeed = velocityOnPlane.magnitude;
+        float attainableVelocity = Mathf.Max(currentSpeed, maxSpeed);
+        velocityOnPlane += deltaAccelerationOnPlane;
+        velocityOnPlane = Vector3.ClampMagnitude(velocityOnPlane, attainableVelocity);
+
+        // Deceleration
+        if (rawStickValue.magnitude <= 0.01f)
+        {
+            Vector3 decelerationOnPlane = -velocityOnPlane * (decelerationFactor * Time.deltaTime);
+            velocityOnPlane += decelerationOnPlane;
+        }
+
+        return velocityOnPlane * Time.deltaTime;
+    }
+
+    const float gravity = -9.8f;
+    float verticalVelocity = 0f;
+    private Vector3 UpdateVerticalMovement()
+    {
+        if (characterController.isGrounded)
+        { verticalVelocity = 0f; }
+
+        if (mustJump)
+        { 
+            mustJump = false;
+            if (characterController.isGrounded)
+            {   verticalVelocity = jumpSpeed;   }
+        }
+
+        verticalVelocity += gravity * Time.deltaTime;
+        return Vector3.up * (verticalVelocity * Time.deltaTime);
+    }
+    #endregion
+
+    #region "Orientation"
+    Vector3 lastMovementDirection = Vector3.zero;
+    private void UpdateOrientation()
+    {
+        Vector3 desiredDirection = CalculateDesiredDirection();
+        RotateToDesiredDirection(desiredDirection);
+
+        Vector3 CalculateDesiredDirection()
+        {
+            Vector3 desiredDirection = Vector3.zero;
+
+            switch (orientationMode)
+            {
+                case OrientationMode.MovementDirection:
+                    if (rawStickValue.magnitude < 0.01f)
+                    {
+                        desiredDirection = lastMovementDirection;
+                    }
+                    else
+                    {
+                        desiredDirection = velocityOnPlane;
+                        lastMovementDirection = desiredDirection;
+                    }
+                    break;
+                case OrientationMode.CameraDirection:
+                    desiredDirection = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up);
+                    break;
+                case OrientationMode.FaceToTarget:
+                    desiredDirection = Vector3.ProjectOnPlane(target.position - transform.position, Vector3.up);
+                    break;
+            }
+
+            return desiredDirection;
+        }
+
+        void RotateToDesiredDirection(Vector3 desiredDirection)
+        {
+            float angularDistance = Vector3.SignedAngle(transform.forward, desiredDirection, Vector3.up);
+            float angleToApply = angularVelocity * Time.deltaTime;
+            angleToApply = Mathf.Min(angleToApply, Mathf.Abs(angularDistance));
+
+            Quaternion rotationToApply =
+                Quaternion.AngleAxis(
+                    angleToApply * Mathf.Sign(angularDistance),
+                    Vector3.up);
+            transform.rotation = rotationToApply * transform.rotation;
+        }
+    }
+    #endregion
+    private float CalculateMaxSpeed()
+    {
+        return isWalking ? maxWalkSpeed : maxRunSpeed;
+    }
+
+    private void UpdateCombat()
+    {
+        if (mustAttack)
+        {
+            mustAttack = false;
+            animator.SetTrigger("Attack");
+        }
+    }
+    
+    void UpdateAnimation()
+    {
+        float maxSpeed = maxRunSpeed;
+        Vector3 localVelocity = transform.InverseTransformDirection(velocityOnPlane);
+        animator.SetFloat("HorizontalVelocity", localVelocity.x / maxSpeed);
+        animator.SetFloat("ForwardVelocity", localVelocity.z / maxSpeed);
+
+        float jumpProgress = Mathf.InverseLerp(jumpSpeed, -jumpSpeed, verticalVelocity);
+        
+        animator.SetFloat("JumpProgress", jumpProgress);
+        animator.SetBool("IsGrounded", characterController.isGrounded);
+    }
+    private void OnAnimationEvent(string hitColliderName)
+         {
+             hitCollidersParent.Find(hitColliderName)?.gameObject.SetActive(true);
+         }
 }
