@@ -31,10 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] InputActionReference moveInputActionReference;
     [FormerlySerializedAs("jump")] [SerializeField] InputActionReference jumpInputActionReference;
     [SerializeField] InputActionReference walkInputActionReference;
-    [FormerlySerializedAs("attack")]
-    [Header("Inputs Combat")]
-    [SerializeField] InputActionReference attackInputActionReference;
-    [SerializeField] InputActionReference nextPrevWeapon;
+
 
     Animator animator;
     CharacterController characterController;
@@ -62,9 +59,6 @@ public class PlayerController : MonoBehaviour
         walkInputActionReference.action.started += OnWalk;
         walkInputActionReference.action.canceled += OnWalk;
         
-        attackInputActionReference.action.Enable();
-        attackInputActionReference.action.performed += OnAttack;
-        
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
             animationEventForwarder.onAnimationEvent.AddListener(OnAnimationEvent);
@@ -85,9 +79,6 @@ public class PlayerController : MonoBehaviour
         walkInputActionReference.action.Disable();
         walkInputActionReference.action.started -= OnWalk;
         walkInputActionReference.action.canceled -= OnWalk;
-        
-        attackInputActionReference.action.Disable();
-        attackInputActionReference.action.performed -= OnAttack;
         
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
@@ -115,12 +106,6 @@ public class PlayerController : MonoBehaviour
     {
         isWalking = ctx.ReadValueAsButton();
     }
-    
-    bool mustAttack = false;
-    private void OnAttack(InputAction.CallbackContext ctx)
-    {
-        mustAttack = true;
-    }
     #endregion
 
     private void Update()
@@ -133,7 +118,6 @@ public class PlayerController : MonoBehaviour
 
         UpdateOrientation();
         UpdateAnimation();
-        UpdateCombat();
     }
 
     #region Movement
@@ -235,15 +219,7 @@ public class PlayerController : MonoBehaviour
     {
         return isWalking ? maxWalkSpeed : maxRunSpeed;
     }
-
-    private void UpdateCombat()
-    {
-        if (mustAttack)
-        {
-            mustAttack = false;
-            animator.SetTrigger("Attack");
-        }
-    }
+    
     
     void UpdateAnimation()
     {
@@ -254,7 +230,7 @@ public class PlayerController : MonoBehaviour
 
         float jumpProgress = Mathf.InverseLerp(jumpSpeed, -jumpSpeed, verticalVelocity);
         
-        animator.SetFloat("JumpProgress", jumpProgress);
+        animator.SetFloat("JumpProgress", characterController.isGrounded ? 1f : jumpProgress);
         animator.SetBool("IsGrounded", characterController.isGrounded);
     }
     private void OnAnimationEvent(string hitColliderName)
