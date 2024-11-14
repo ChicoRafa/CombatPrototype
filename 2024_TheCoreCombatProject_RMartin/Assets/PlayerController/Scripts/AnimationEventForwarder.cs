@@ -1,13 +1,21 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class AnimationEventForwarder : MonoBehaviour
 {
-    [HideInInspector] public UnityEvent<string> onAnimationEvent;
+    [FormerlySerializedAs("onAnimationEvent")] [HideInInspector] public UnityEvent<string> onAnimationAttackEvent;
+    [HideInInspector] public UnityEvent onMeleeAttackEvent;
 
     public void OnAnimationAttack(string hitColliderName)
     {
         Debug.Log($"OnAnimationAttack: {hitColliderName}");
-        onAnimationEvent.Invoke(hitColliderName);
+        onAnimationAttackEvent.Invoke(hitColliderName);
+    }
+
+    public void MeleeWeaponAttack()
+    {
+        Debug.Log("MeleeWeaponAttack");
+        onMeleeAttackEvent.Invoke();
     }
 }

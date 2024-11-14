@@ -1,7 +1,5 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class WeaponManager : MonoBehaviour
 {
     [Header("Configuration")]
@@ -12,6 +10,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] InputActionReference nextPrevWeapon;
     
     Animator animator;
+    RuntimeAnimatorController originalAnimatorController;
     
     WeaponBase[] weapons;
     int currentWeaponIndex = -1;
@@ -19,10 +18,11 @@ public class WeaponManager : MonoBehaviour
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
-        weapons = weaponsParent.GetComponentsInChildren<WeaponBase>();
+        originalAnimatorController = animator.runtimeAnimatorController;
+        weapons = weaponsParent.GetComponentsInChildren<WeaponBase>(true);
         foreach (WeaponBase weaponBase in weapons)
         {
-            weaponBase.gameObject.SetActive(false);
+            weaponBase.Init();
         }
     }
 
@@ -33,20 +33,31 @@ public class WeaponManager : MonoBehaviour
 
     private void OnEnable()
     {
-        attackInputActionReference.action.Enable();
-        attackInputActionReference.action.performed += OnAttack;
-        
+        attackInputActionReference.action.Enable();        
+        nextPrevWeapon.action.Enable();
+
         attackInputActionReference.action.performed += OnAttack;
         nextPrevWeapon.action.performed += OnNextPrevWeapon;
+        
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            
+            animationEventForwarder.onAnimationAttackEvent.AddListener(OnMeleeAttackEvent);
+        }
     }
 
     private void OnDisable()
     {
         attackInputActionReference.action.Disable();
-        attackInputActionReference.action.performed -= OnAttack;
+        nextPrevWeapon.action.Disable();
         
         attackInputActionReference.action.performed -= OnAttack;
         nextPrevWeapon.action.performed -= OnNextPrevWeapon;
+        
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            animationEventForwarder.onAnimationAttackEvent.RemoveListener(OnMeleeAttackEvent);
+        }
     }
     
     bool mustAttack = false;
@@ -86,15 +97,26 @@ public class WeaponManager : MonoBehaviour
         //Deselect current weapon
         if (currentWeaponIndex != -1)
         {
-            weapons[currentWeaponIndex].Deselect();
+            weapons[currentWeaponIndex].Deselect(animator);
         }
         //Select new weapon
         currentWeaponIndex = weaponToSet;
         if (currentWeaponIndex != -1)
         {
             weapons[currentWeaponIndex].gameObject.SetActive(true);
-            weapons[currentWeaponIndex].Select();
+            weapons[currentWeaponIndex].Select(animator);
         }
+        else
+        {
+            animator.runtimeAnimatorController = originalAnimatorController;
+        }
+    }
+    
+    public void OnMeleeAttackEvent(string arg0)
+    {
+        weapons[currentWeaponIndex].PerformAttack();
+        //weaponsParent.GetComponentInChildren<WeaponBase>().PerformAttack();
+
     }
     
     private void UpdateCombat()

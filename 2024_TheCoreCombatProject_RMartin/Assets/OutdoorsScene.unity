@@ -1003,9 +1003,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1662797446}
   - {fileID: 1717688242}
   - {fileID: 1799864450}
-  - {fileID: 1662797446}
   m_Father: {fileID: 54296052}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &925083979
@@ -1161,6 +1161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c19be4e915d1e84c976b645323cf90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponsParent: {fileID: 916949881}
   attackInputActionReference: {fileID: -243149131118136938, guid: 55bf5ee854dae29409b00f6bd1bd4895, type: 3}
   nextPrevWeapon: {fileID: -772696473150539692, guid: 55bf5ee854dae29409b00f6bd1bd4895, type: 3}
 --- !u!1 &974934037 stripped
@@ -2215,6 +2216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04223aedc5f4d343a5ef3f6014c28e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  comboLenght: 5
+  animatorOverrideController: {fileID: 22100000, guid: e2a34c704c83ab34fa5087b593c0e253, type: 2}
+  activateFighting: 1
 --- !u!4 &1675946415 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5665043316445423941, guid: 5807dc43f30236c41adf8912dfa362fe, type: 3}
@@ -2277,66 +2281,11 @@ Transform:
   - {fileID: 2044874232}
   m_Father: {fileID: 946022475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1799864446 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8242427290606490198, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
-  m_PrefabInstance: {fileID: 14381472474140018}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1799864450 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4916138776906113093, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
   m_PrefabInstance: {fileID: 14381472474140018}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1799864451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799864446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f638b3d07666f8458da018f93d90174, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 1
---- !u!114 &1799864452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799864446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14e35474917b68f498b1c6640299ab49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  OnHit:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!65 &1799864453
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799864446}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.1474465, y: 0.2881334, z: 1.2167583}
-  m_Center: {x: 0.000000019251782, y: -0.014341411, z: -0.58618605}
 --- !u!1 &1805939207
 GameObject:
   m_ObjectHideFlags: 0
@@ -3204,7 +3153,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08c9fdf4d054714bb1434b20c029864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onAnimationEvent:
+  onAnimationAttackEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onMeleeAttackEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &2051250852 stripped
@@ -3411,6 +3363,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8068656797610468865, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8068656797610468865, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
+      propertyPath: layerMask.m_Bits
+      value: 51
+      objectReference: {fileID: 0}
     - target: {fileID: 8242427290606490198, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
       propertyPath: m_Name
       value: MeleeWeapon_EpicSword
@@ -3422,16 +3382,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8242427290606490198, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1799864453}
-    - targetCorrespondingSourceObject: {fileID: 8242427290606490198, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1799864452}
-    - targetCorrespondingSourceObject: {fileID: 8242427290606490198, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1799864451}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98168efeb8eed98458af69bc612fdeca, type: 3}
 --- !u!1001 &1922881183388990180
 PrefabInstance:
@@ -3441,6 +3392,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 916949881}
     m_Modifications:
+    - target: {fileID: 5310045298544224244, guid: 0b0d48969bbb86948a9ea97efd206352, type: 3}
+      propertyPath: duration
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5456271018585163629, guid: 0b0d48969bbb86948a9ea97efd206352, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.924
@@ -3480,6 +3435,10 @@ PrefabInstance:
     - target: {fileID: 5456271018585163629, guid: 0b0d48969bbb86948a9ea97efd206352, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6322130074784874842, guid: 0b0d48969bbb86948a9ea97efd206352, type: 3}
+      propertyPath: damage
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6928877504601935912, guid: 0b0d48969bbb86948a9ea97efd206352, type: 3}
       propertyPath: m_Sources.Array.data[0].sourceTransform

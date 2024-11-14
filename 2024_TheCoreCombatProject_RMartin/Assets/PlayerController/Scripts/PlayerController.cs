@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
         
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
-            animationEventForwarder.onAnimationEvent.AddListener(OnAnimationEvent);
+            animationEventForwarder.onAnimationAttackEvent.AddListener(OnAnimationEvent);
         }
     }
     
@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
-            animationEventForwarder.onAnimationEvent.RemoveListener(OnAnimationEvent);
+            animationEventForwarder.onAnimationAttackEvent.RemoveListener(OnAnimationEvent);
         }
     }
     #region Input Events
@@ -124,6 +124,9 @@ public class PlayerController : MonoBehaviour
     Vector3 velocityOnPlane = Vector3.zero;
     private Vector3 UpdateMovementOnPlane()
     {
+        // Deceleration
+        Vector3 decelerationOnPlane = -velocityOnPlane * (decelerationFactor * Time.deltaTime);
+        velocityOnPlane += decelerationOnPlane;
         // Acceleration
         Vector3 acceleration = (mainCamera.transform.forward * rawStickValue.z) + (mainCamera.transform.right * rawStickValue.x);
         float accelerationLength = acceleration.magnitude;
@@ -136,14 +139,7 @@ public class PlayerController : MonoBehaviour
         float attainableVelocity = Mathf.Max(currentSpeed, maxSpeed);
         velocityOnPlane += deltaAccelerationOnPlane;
         velocityOnPlane = Vector3.ClampMagnitude(velocityOnPlane, attainableVelocity);
-
-        // Deceleration
-        if (rawStickValue.magnitude <= 0.01f)
-        {
-            Vector3 decelerationOnPlane = -velocityOnPlane * (decelerationFactor * Time.deltaTime);
-            velocityOnPlane += decelerationOnPlane;
-        }
-
+        
         return velocityOnPlane * Time.deltaTime;
     }
 

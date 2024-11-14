@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class HitCollider : MonoBehaviour, IHitter
 {
-    [Header("Configuration")] public float damage;
+    [Header("Configuration")] public float damage = 10f;
     [Header("Events")] public UnityEvent OnHit;
 
     private void OnCollisionEnter(Collision collision)

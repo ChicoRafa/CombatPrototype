@@ -2,15 +2,8 @@ using UnityEngine;
 
 public class WeaponMartialArts : WeaponBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    internal override void PerformAttack()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        //Managed by PlayerController, but it may be relocated to here in the future
     }
 }

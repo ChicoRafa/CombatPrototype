@@ -1,13 +1,26 @@
 using UnityEngine;
 
-public class WeaponBase : MonoBehaviour
+public abstract class WeaponBase : MonoBehaviour
 {
-    public void Select()
+    [SerializeField] private int comboLenght = 3;
+    [SerializeField] AnimatorOverrideController animatorOverrideController;
+    [SerializeField] private bool activateFighting = false;
+    internal virtual void Init()
      {
-         throw new System.NotImplementedException();
+         gameObject.SetActive(false);
      }
-    public void Deselect()
+    internal virtual void Select(Animator animator)
+     {
+            gameObject.SetActive(true);
+            animator.runtimeAnimatorController = animatorOverrideController;
+            animator.SetBool("IsFighting", activateFighting);
+            animator.SetInteger("ComboLength", comboLenght);
+     }
+    internal virtual void Deselect(Animator animator)
     {
-        throw new System.NotImplementedException();
+        gameObject.SetActive(false);
+        animator.runtimeAnimatorController = null;
     }
+
+    internal abstract void PerformAttack();
 }
