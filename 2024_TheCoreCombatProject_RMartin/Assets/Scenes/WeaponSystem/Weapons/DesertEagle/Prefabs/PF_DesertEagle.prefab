@@ -324,6 +324,56 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1453080884947359979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5096188897245002314}
+  - component: {fileID: 7490708340275441241}
+  m_Layer: 0
+  m_Name: BarrelByRaycast
+  m_TagString: Barrel
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5096188897245002314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453080884947359979}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.847, y: 0.076, z: -0.137}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3274763499367465774}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &7490708340275441241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453080884947359979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27d8d951eb894df46b9a106c63045384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugShoot: 0
+  damage: 1
+  range: 50
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 59
 --- !u!1 &3628589014075789302
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +383,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5953281594862171030}
+  - component: {fileID: 2267028875364318529}
+  - component: {fileID: 7785097082368861821}
+  - component: {fileID: 3965718228371104418}
   m_Layer: 0
   m_Name: PF_DesertEagle
   m_TagString: Untagged
@@ -350,13 +403,85 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1442973995042706913}
   - {fileID: 3274763499367465774}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2267028875364318529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3628589014075789302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d84b1a21aeb51c4c8219d8daccde0d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comboLenght: 3
+  animatorOverrideController: {fileID: 22100000, guid: 99e4e25d5b2f26545a0dbff3d96c7828, type: 2}
+  activateFighting: 0
+  debugShoot: 0
+  debugStartShooting: 0
+  debugStopShooting: 0
+  debugShootBurst: 0
+  debugCancelBurst: 0
+--- !u!1773428102 &7785097082368861821
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3628589014075789302}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_TranslationAtRest: {x: -1.6142, y: 12.2583, z: -4.5413}
+  m_RotationAtRest: {x: -75, y: 0, z: 180}
+  m_TranslationOffsets:
+  - {x: -0.07557765, y: 0.48459405, z: 0.024732232}
+  m_RotationOffsets:
+  - {x: 0.00028259892, y: -165.00005, z: -89.99992}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_Active: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 0}
+    weight: 1
+--- !u!895512359 &3965718228371104418
+AimConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3628589014075789302}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_RotationAtRest: {x: -75, y: 0.0000429153, z: 179.99995}
+  m_RotationOffset: {x: -74.87171, y: -97.4243, z: -173.15074}
+  m_AimVector: {x: 0, y: 0, z: 1}
+  m_UpVector: {x: 0, y: 1, z: 0}
+  m_WorldUpVector: {x: 0, y: 1, z: 0}
+  m_WorldUpObject: {fileID: 0}
+  m_UpType: 0
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_Active: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 0}
+    weight: 1
 --- !u!1 &6900829584720396613
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,12 +601,12 @@ GameObject:
   - component: {fileID: 8543458639712924753}
   - component: {fileID: 4122890728817023737}
   m_Layer: 0
-  m_Name: Barrel
+  m_Name: BarrelByInstantiation
   m_TagString: Barrel
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8543458639712924753
 Transform:
   m_ObjectHideFlags: 0
@@ -573,6 +698,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8543458639712924753}
+  - {fileID: 5096188897245002314}
   m_Father: {fileID: 5953281594862171030}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9173749827422015321

@@ -1,17 +1,30 @@
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
+
 public class WeaponManager : MonoBehaviour
 {
-    [Header("Configuration")]
-    [SerializeField] Transform weaponsParent;
+    [Header("Configuration")] [SerializeField]
+    Transform weaponsParent;
     
-    [Header("Inputs Combat")]
-    [SerializeField] InputActionReference attackInputActionReference;
+    [Header("IK")]
+    [SerializeField] Rig armsRig;
+
+    [Header("Inputs Combat")] [SerializeField]
+    InputActionReference attackInputActionReference;
+
     [SerializeField] InputActionReference nextPrevWeapon;
-    
+
+    [Header("Imputs Fire Combat")] [SerializeField]
+    InputActionReference shootInputActionReference;
+
+    [SerializeField] InputActionReference continuousShootInputActionReference;
+    [SerializeField] InputActionReference aimInputActionReference;
+
     Animator animator;
     RuntimeAnimatorController originalAnimatorController;
-    
+
     WeaponBase[] weapons;
     int currentWeaponIndex = -1;
 
@@ -33,39 +46,59 @@ public class WeaponManager : MonoBehaviour
 
     private void OnEnable()
     {
-        attackInputActionReference.action.Enable();        
+        //Enable all inputs
+        attackInputActionReference.action.Enable();
         nextPrevWeapon.action.Enable();
-
+        shootInputActionReference.action.Enable();
+        continuousShootInputActionReference.action.Enable();
+        aimInputActionReference.action.Enable();
+        //Add listeners
         attackInputActionReference.action.performed += OnAttack;
         nextPrevWeapon.action.performed += OnNextPrevWeapon;
-        
+
+        shootInputActionReference.action.performed += OnShoot;
+        continuousShootInputActionReference.action.started += OnContinuousShoot;
+        continuousShootInputActionReference.action.canceled += OnContinuousShoot;
+        aimInputActionReference.action.started += OnAim;
+        aimInputActionReference.action.canceled += OnAim;
+
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
-            
-            animationEventForwarder.onAnimationAttackEvent.AddListener(OnMeleeAttackEvent);
+            animationEventForwarder.onMeleeAttackEvent.AddListener(OnMeleeAttackEvent);
         }
     }
 
     private void OnDisable()
     {
+        //Disable all inputs
         attackInputActionReference.action.Disable();
         nextPrevWeapon.action.Disable();
-        
+        shootInputActionReference.action.Disable();
+        continuousShootInputActionReference.action.Disable();
+        aimInputActionReference.action.Disable();
+        //Remove all listeners
         attackInputActionReference.action.performed -= OnAttack;
         nextPrevWeapon.action.performed -= OnNextPrevWeapon;
-        
+
+        shootInputActionReference.action.performed -= OnShoot;
+        continuousShootInputActionReference.action.started -= OnContinuousShoot;
+        continuousShootInputActionReference.action.canceled -= OnContinuousShoot;
+        aimInputActionReference.action.started -= OnAim;
+        aimInputActionReference.action.canceled -= OnAim;
+
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
-            animationEventForwarder.onAnimationAttackEvent.RemoveListener(OnMeleeAttackEvent);
+            animationEventForwarder.onMeleeAttackEvent.RemoveListener(OnMeleeAttackEvent);
         }
     }
-    
+
     bool mustAttack = false;
+
     private void OnAttack(InputAction.CallbackContext ctx)
     {
         mustAttack = true;
     }
-    
+
     private void OnNextPrevWeapon(InputAction.CallbackContext ctx)
     {
         int weaponToSetActive = currentWeaponIndex;
@@ -86,10 +119,41 @@ public class WeaponManager : MonoBehaviour
                 weaponToSetActive = weapons.Length - 1;
             }
         }
+
         if (weaponToSetActive != currentWeaponIndex)
         {
             SelectWeapon(weaponToSetActive);
         }
+    }
+
+    private void OnShoot(InputAction.CallbackContext ctx)
+    {
+        if ((currentWeaponIndex != -1) && (weapons[currentWeaponIndex] is Weapon_FireWeapon))
+        {
+            ((Weapon_FireWeapon)weapons[currentWeaponIndex]).Shoot();
+        }
+    }
+
+    private void OnContinuousShoot(InputAction.CallbackContext ctx)
+    {
+        if ((currentWeaponIndex != -1) && (weapons[currentWeaponIndex] is Weapon_FireWeapon))
+        {
+            float value = ctx.ReadValue<float>();
+            if (value > 0f)
+            {
+                ((Weapon_FireWeapon)weapons[currentWeaponIndex]).StartShooting();
+            }
+            else
+            {
+                ((Weapon_FireWeapon)weapons[currentWeaponIndex]).StopShooting();
+            }
+        }
+    }
+
+    private void OnAim(InputAction.CallbackContext ctx)
+    {
+        float value = ctx.ReadValue<float>();
+        animator.SetBool("IsAiming", value > 0f);
     }
 
     public void SelectWeapon(int weaponToSet)
@@ -98,27 +162,44 @@ public class WeaponManager : MonoBehaviour
         if (currentWeaponIndex != -1)
         {
             weapons[currentWeaponIndex].Deselect(animator);
+            if (weapons[currentWeaponIndex] is Weapon_FireWeapon)
+            {
+                animator.SetBool("IsShooting", false);
+            }
         }
+
         //Select new weapon
         currentWeaponIndex = weaponToSet;
         if (currentWeaponIndex != -1)
         {
             weapons[currentWeaponIndex].gameObject.SetActive(true);
             weapons[currentWeaponIndex].Select(animator);
+            animator.SetBool("IsHoldingFireWeapon", weapons[currentWeaponIndex] is Weapon_FireWeapon);
         }
         else
         {
             animator.runtimeAnimatorController = originalAnimatorController;
         }
+        
+        AnimateArmRigsWeight();
     }
-    
-    public void OnMeleeAttackEvent(string arg0)
+
+    private void AnimateArmRigsWeight()
+    {
+        DOTween.To(
+            () => armsRig.weight,
+            x => armsRig.weight = x,
+            (currentWeaponIndex != -1) && (weapons[currentWeaponIndex] is Weapon_FireWeapon) ? 1f : 0f,
+            0.25f
+        );
+    }
+
+    public void OnMeleeAttackEvent()
     {
         weapons[currentWeaponIndex].PerformAttack();
         //weaponsParent.GetComponentInChildren<WeaponBase>().PerformAttack();
-
     }
-    
+
     private void UpdateCombat()
     {
         if (mustAttack)
