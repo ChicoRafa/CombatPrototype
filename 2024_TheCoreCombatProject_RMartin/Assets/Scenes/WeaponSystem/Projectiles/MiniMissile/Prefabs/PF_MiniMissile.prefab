@@ -217,7 +217,6 @@ GameObject:
   - component: {fileID: 9006067449610912244}
   - component: {fileID: 5025677244500750865}
   - component: {fileID: 87532145220403254}
-  - component: {fileID: 365333072830397815}
   - component: {fileID: 7001583303117946408}
   - component: {fileID: 6823195045391286013}
   m_Layer: 0
@@ -293,18 +292,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!75 &365333072830397815
-ConstantForce:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7689689296016878311}
-  m_Enabled: 1
-  m_Force: {x: 0, y: 0, z: 0}
-  m_RelativeForce: {x: 0, y: 0, z: 10}
-  m_Torque: {x: 0, y: 0, z: 0}
-  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &7001583303117946408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,6 +304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e35474917b68f498b1c6640299ab49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 10
   OnHit:
     m_PersistentCalls:
       m_Calls: []
@@ -332,6 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e1348343855e104bb5fc67ce2c325de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSpeed: 10
+  explosionPrefab: {fileID: 7674609639367525634, guid: 1ec34a9c4f7790a429992b9fdced6545, type: 3}
+  timeToDieAfterCollision: 0
 --- !u!1001 &1187703520070162035
 PrefabInstance:
   m_ObjectHideFlags: 0

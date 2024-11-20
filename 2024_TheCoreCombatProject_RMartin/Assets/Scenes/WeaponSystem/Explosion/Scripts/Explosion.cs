@@ -7,7 +7,7 @@ public class Explosion : MonoBehaviour, IHitter
     [SerializeField] private float explosionForce = 200f;
     [SerializeField] private LayerMask targetLayerMask = Physics.DefaultRaycastLayers;
     [SerializeField] private LayerMask occluderLayerMask = Physics.DefaultRaycastLayers;
-
+    [SerializeField] private GameObject visualExplosionPrefab;
     void Start()
     {
         foreach (Collider collider in Physics.OverlapSphere(transform.position, radius, targetLayerMask))
@@ -22,6 +22,9 @@ public class Explosion : MonoBehaviour, IHitter
 
             hit.collider?.attachedRigidbody?.AddExplosionForce(explosionForce, transform.position, radius);
         }
+
+        Instantiate(visualExplosionPrefab, transform.position, Quaternion.identity);
+        Destroy(visualExplosionPrefab);
     }
 
     float IHitter.GetDamage()
