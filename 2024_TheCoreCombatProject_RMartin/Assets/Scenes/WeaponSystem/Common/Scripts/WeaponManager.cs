@@ -10,6 +10,7 @@ public class WeaponManager : MonoBehaviour
     
     [Header("IK")]
     [SerializeField] Rig armsRig;
+    [SerializeField] Rig aimRig;
 
     [Header("Inputs Combat")] [SerializeField]
     InputActionReference attackInputActionReference;
@@ -182,6 +183,17 @@ public class WeaponManager : MonoBehaviour
         }
         
         AnimateArmRigsWeight();
+        AnimateAimRigWeight();
+    }
+
+    private void AnimateAimRigWeight()
+    {
+        DOTween.To(
+            () => aimRig.weight,
+            x => aimRig.weight = x,
+            (currentWeaponIndex != -1) && (weapons[currentWeaponIndex] is Weapon_FireWeapon) ? 1f : 0f,
+            0.25f
+        );
     }
 
     private void AnimateArmRigsWeight()

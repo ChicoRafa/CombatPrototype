@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,10 +21,13 @@ public class EnemyController : MonoBehaviour
     Animator animator;
     float timeOfLastAttack;
 
+    EntityLife entityLife;
+
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        entityLife = GetComponent<EntityLife>();
         timeOfLastAttack = Time.time;
     }
 
@@ -45,5 +49,26 @@ public class EnemyController : MonoBehaviour
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = target.position;
         }
+    }
+
+    private void OnEnable()
+    {
+        entityLife.onDeath.AddListener(OnDeath);
+    }
+
+    private void OnDisable()
+    {
+        entityLife.onDeath.RemoveListener(OnDeath);
+    }
+
+    private void OnDeath()
+    {
+        enabled = false;
+        GetComponent<Ragdollizer>()?.Ragdollize();
+        navMeshAgent.enabled = false;
+        animator.enabled = false;
+        hitCollider.gameObject.SetActive(false);
+        
+        DOVirtual.DelayedCall(5f, () => Destroy(gameObject));
     }
 }
