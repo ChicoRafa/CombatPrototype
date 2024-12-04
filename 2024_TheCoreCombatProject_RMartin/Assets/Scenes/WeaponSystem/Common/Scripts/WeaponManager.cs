@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -28,6 +29,7 @@ public class WeaponManager : MonoBehaviour
 
     WeaponBase[] weapons;
     int currentWeaponIndex = -1;
+    private Coroutine resetComboCoroutine;
 
     private void Awake()
     {
@@ -97,7 +99,10 @@ public class WeaponManager : MonoBehaviour
 
     private void OnAttack(InputAction.CallbackContext ctx)
     {
-        mustAttack = true;
+        if (!weapons[currentWeaponIndex].isCooldownActive)
+        {
+            mustAttack = true;
+        }
     }
 
     private void OnNextPrevWeapon(InputAction.CallbackContext ctx)
@@ -163,6 +168,7 @@ public class WeaponManager : MonoBehaviour
         if (currentWeaponIndex != -1)
         {
             weapons[currentWeaponIndex].Deselect(animator);
+            weapons[currentWeaponIndex].ContinueCooldown(this);
             if (weapons[currentWeaponIndex] is Weapon_FireWeapon)
             {
                 animator.SetBool("IsShooting", false);
@@ -209,7 +215,18 @@ public class WeaponManager : MonoBehaviour
     public void OnMeleeAttackEvent()
     {
         weapons[currentWeaponIndex].PerformAttack();
+        if (resetComboCoroutine != null)
+        {
+            StopCoroutine(resetComboCoroutine);
+        }
+        resetComboCoroutine = StartCoroutine(ResetComboAfterDelay());
         //weaponsParent.GetComponentInChildren<WeaponBase>().PerformAttack();
+    }
+    
+    private IEnumerator ResetComboAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        weapons[currentWeaponIndex].ResetComboCount();
     }
 
     private void UpdateCombat()
@@ -219,5 +236,23 @@ public class WeaponManager : MonoBehaviour
             mustAttack = false;
             animator.SetTrigger("Attack");
         }
+    }
+    
+    private Coroutine globalCooldownCoroutine;
+
+    public void StartGlobalCooldownCoroutine(float remainingTime, WeaponBase weapon)
+    {
+        if (globalCooldownCoroutine != null)
+        {
+            StopCoroutine(globalCooldownCoroutine);
+        }
+        globalCooldownCoroutine = StartCoroutine(GlobalCooldownCoroutine(remainingTime, weapon));
+    }
+
+    private IEnumerator GlobalCooldownCoroutine(float remainingTime, WeaponBase weapon)
+    {
+        yield return new WaitForSeconds(remainingTime);
+        weapon.isCooldownActive = false;
+        weapon.ResetComboCount();
     }
 }

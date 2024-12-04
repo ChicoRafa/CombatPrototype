@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e35474917b68f498b1c6640299ab49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0.1
+  damage: 3
   affectedTags:
   - Player
   OnHit:
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 698b0418b92a07d4b831d3ea2427f53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialLife: 1
+  initialLife: 3
   onLifeChanged:
     m_PersistentCalls:
       m_Calls: []

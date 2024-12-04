@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 1.201684
       objectReference: {fileID: 0}
+    - target: {fileID: 618512531952268580, guid: 71b8f163e99ae0f408116c18faee011c, type: 3}
+      propertyPath: damage
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 754421925424874876, guid: 71b8f163e99ae0f408116c18faee011c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.5
@@ -90,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2723911462864230237, guid: 71b8f163e99ae0f408116c18faee011c, type: 3}
       propertyPath: initialLife
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7121976168615085152, guid: 71b8f163e99ae0f408116c18faee011c, type: 3}
       propertyPath: m_Name

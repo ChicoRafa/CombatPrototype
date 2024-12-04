@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] InputActionReference moveInputActionReference;
     [FormerlySerializedAs("jump")] [SerializeField] InputActionReference jumpInputActionReference;
     [SerializeField] InputActionReference walkInputActionReference;
+    private PlayerInput playerInput;
 
 
     Animator animator;
@@ -42,6 +43,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         characterController = GetComponent<CharacterController>();
         mainCamera = Camera.main;
+        playerInput = GetComponent<PlayerInput>();
     }
 
     private void OnEnable()
@@ -85,6 +87,12 @@ public class PlayerController : MonoBehaviour
             animationEventForwarder.onAnimationAttackEvent.RemoveListener(OnAnimationEvent);
         }
     }
+
+    public void DisableAllInputs()
+    {
+        playerInput.enabled = false;
+    }
+    
     #region Input Events
     //Inputs
     Vector3 rawStickValue;

@@ -10,7 +10,10 @@ public class WeaponMelee_ByHitCollider : WeaponBase
     }
     internal override void PerformAttack()
     {
-        Debug.Log("PerformAttack");
-        hitCollider?.gameObject.SetActive(true);
+        if (!isCooldownActive)
+        {
+            hitCollider?.gameObject.SetActive(true);
+            IncrementComboCount();
+        }
     }
 }

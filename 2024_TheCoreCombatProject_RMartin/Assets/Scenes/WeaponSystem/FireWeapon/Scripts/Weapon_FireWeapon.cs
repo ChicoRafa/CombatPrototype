@@ -33,9 +33,13 @@ public class Weapon_FireWeapon : WeaponBase
 
     public void Shoot()
     {
-        foreach (BarrelBase barrelBase in barrels)
+        if (!isCooldownActive)
         {
-            barrelBase.OnShoot();
+            foreach (BarrelBase barrelBase in barrels)
+            {
+                barrelBase.OnShoot();
+            }
+            IncrementComboCount();
         }
     }
     
