@@ -60,6 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+  affectedTags: []
   OnHit:
     m_PersistentCalls:
       m_Calls: []
@@ -269,9 +270,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comboLenght: 3
+  comboCooldown: 3
   animatorOverrideController: {fileID: 22100000, guid: 9c673ca239787ed418acb52ecff5c78d, type: 2}
   activateFighting: 1
+  isCooldownActive: 0
+  currentComboCount: 0
+  damage: 1
   raycastStart: {fileID: 2056496154851271973}
   raycastEnd: {fileID: 5473137720472132948}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 123
   minimumPointDistance: 0.05
   attackDuration: 0.5
+  affectedTags: []

@@ -9,7 +9,7 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
-	"last_search.66F56946" = "package man"
+	"last_search.66F56946" = "grena"
 	"OpenInspectorPreview.66F56946" = "0"
 	"currentGroup.66F56946" = ""
 	"picker_window_position_offset.075BCD15" = "-413,6;187,2;402,4;696"
@@ -72,6 +72,9 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"grena"
+	"rendering/mater"
+	"rende"
 	"package man"
 ]
 searchItemFavorites = [

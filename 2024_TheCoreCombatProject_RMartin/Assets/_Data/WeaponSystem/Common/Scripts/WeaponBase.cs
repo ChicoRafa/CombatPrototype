@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class WeaponBase : MonoBehaviour
 {
     [SerializeField] private int comboLenght = 3;
@@ -10,9 +11,12 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] protected internal bool isCooldownActive = false;
     [SerializeField] protected int currentComboCount = 0;
     private float cooldownStartTime = 0f;
+    public AudioSource audioSource;
+
     internal virtual void Init()
      {
          gameObject.SetActive(false);
+         audioSource = GetComponent<AudioSource>();
      }
     internal virtual void Select(Animator animator)
      {

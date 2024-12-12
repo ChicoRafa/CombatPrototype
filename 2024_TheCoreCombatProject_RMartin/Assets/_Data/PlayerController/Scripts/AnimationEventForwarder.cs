@@ -9,13 +9,11 @@ public class AnimationEventForwarder : MonoBehaviour
 
     public void OnAnimationAttack(string hitColliderName)
     {
-        Debug.Log($"OnAnimationAttack: {hitColliderName}");
         onAnimationAttackEvent.Invoke(hitColliderName);
     }
 
     public void MeleeWeaponAttack()
     {
-        Debug.Log("MeleeWeaponAttack");
         onMeleeAttackEvent.Invoke();
     }
 }

@@ -21,12 +21,14 @@ public class BulletTrail : MonoBehaviour
             positions[i] = Vector3.Lerp(startPosition, endPosition, interpolationValue);
         }
         lineRenderer.SetPositions(positions);
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.yellow;
         
         DOTween.To(
             () => lineRenderer.widthMultiplier,
             (x) => lineRenderer.widthMultiplier = x,
             0f,
             trailDuration
-        );
+        ).OnComplete(() => Destroy(gameObject));
     }
 }

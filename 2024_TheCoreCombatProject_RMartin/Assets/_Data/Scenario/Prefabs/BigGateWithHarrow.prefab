@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -9016609945311087217, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.214
+      value: -0.37
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalScale.x
@@ -26,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.84
+      value: -19.35
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.y
@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.32
+      value: 17.95
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalRotation.w
@@ -78,8 +78,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3388507799465647043, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.21399999
+      value: -0.37
       objectReference: {fileID: 0}
+    - target: {fileID: -3257494996606120949, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -7647200295553085840, guid: 736da7ce3002da840bc96485b1c66a4e, type: 3}
     - target: {fileID: -184809553583533586, guid: 82bbadb7b1c76a24ea24e0302008dd35, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
@@ -15825,7 +15829,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 403
+  m_VersionIndex: 421
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

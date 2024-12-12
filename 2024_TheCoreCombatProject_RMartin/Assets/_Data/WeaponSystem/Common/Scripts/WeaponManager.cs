@@ -3,6 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class WeaponManager : MonoBehaviour
 {
@@ -24,6 +25,15 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] InputActionReference continuousShootInputActionReference;
     [SerializeField] InputActionReference aimInputActionReference;
 
+    [Header("UI")]
+    [SerializeField] Image weaponIcon;
+    [SerializeField] Sprite[] weaponIcons;
+    
+    [Header("Audio")]
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] meleeAttackSounds;
+    [SerializeField] AudioClip[] fireWeaponSounds;
+    
     Animator animator;
     RuntimeAnimatorController originalAnimatorController;
 
@@ -68,6 +78,7 @@ public class WeaponManager : MonoBehaviour
         foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
         {
             animationEventForwarder.onMeleeAttackEvent.AddListener(OnMeleeAttackEvent);
+            if (weapons[currentWeaponIndex].audioSource!=null) weapons[currentWeaponIndex].audioSource.Play();
         }
     }
 
@@ -137,6 +148,7 @@ public class WeaponManager : MonoBehaviour
         if ((currentWeaponIndex != -1) && (weapons[currentWeaponIndex] is Weapon_FireWeapon))
         {
             ((Weapon_FireWeapon)weapons[currentWeaponIndex]).Shoot();
+            PlayMeleeAttackSound();
         }
     }
 
@@ -182,10 +194,14 @@ public class WeaponManager : MonoBehaviour
             weapons[currentWeaponIndex].gameObject.SetActive(true);
             weapons[currentWeaponIndex].Select(animator);
             animator.SetBool("IsHoldingFireWeapon", weapons[currentWeaponIndex] is Weapon_FireWeapon);
+            weaponIcon.sprite = weaponIcons[currentWeaponIndex];
+            weaponIcon.gameObject.SetActive(true);
         }
         else
         {
             animator.runtimeAnimatorController = originalAnimatorController;
+            weaponIcon.sprite = null;
+            weaponIcon.gameObject.SetActive(false);
         }
         
         AnimateArmRigsWeight();
@@ -215,12 +231,23 @@ public class WeaponManager : MonoBehaviour
     public void OnMeleeAttackEvent()
     {
         weapons[currentWeaponIndex].PerformAttack();
+        PlayMeleeAttackSound();
         if (resetComboCoroutine != null)
         {
             StopCoroutine(resetComboCoroutine);
         }
         resetComboCoroutine = StartCoroutine(ResetComboAfterDelay());
         //weaponsParent.GetComponentInChildren<WeaponBase>().PerformAttack();
+    }
+    
+    private void PlayMeleeAttackSound()
+    {
+        WeaponBase currentWeapon = weapons[currentWeaponIndex];
+        if (currentWeapon.audioSource != null)
+        {
+            Debug.Log("Playing sound");
+            currentWeapon.audioSource.Play();
+        }
     }
     
     private IEnumerator ResetComboAfterDelay()
