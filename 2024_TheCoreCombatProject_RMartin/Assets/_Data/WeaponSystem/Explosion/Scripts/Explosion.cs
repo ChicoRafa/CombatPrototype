@@ -8,23 +8,24 @@ public class Explosion : MonoBehaviour, IHitter
     [SerializeField] private LayerMask targetLayerMask = Physics.DefaultRaycastLayers;
     [SerializeField] private LayerMask occluderLayerMask = Physics.DefaultRaycastLayers;
     [SerializeField] private GameObject visualExplosionPrefab;
+
     void Start()
     {
         foreach (Collider collider in Physics.OverlapSphere(transform.position, radius, targetLayerMask))
         {
-            if (!Physics.Linecast(transform.position, collider.transform.position, out RaycastHit hit,
-                    occluderLayerMask)
+            if (!Physics.Linecast(transform.position, collider.transform.position, out RaycastHit hit, occluderLayerMask)
                 || hit.collider == collider)
             {
-                //Collider was hit
-                hit.collider?.GetComponent<HurtCollider>()?.NotifyHit(this);
+                Debug.Log("Collider was hit: " + collider.name);
+                // Collider was hit
+                collider.GetComponent<HurtCollider>()?.NotifyHit(this);
             }
 
-            hit.collider?.attachedRigidbody?.AddExplosionForce(explosionForce, transform.position, radius);
+            collider.attachedRigidbody?.AddExplosionForce(explosionForce, transform.position, radius);
         }
 
-        Instantiate(visualExplosionPrefab, transform.position, Quaternion.identity);
-        Destroy(visualExplosionPrefab);
+        GameObject visualExplosionInstance = Instantiate(visualExplosionPrefab, transform.position, Quaternion.identity);
+        Destroy(visualExplosionInstance, 3f); // Destroy the instantiated object after 3 seconds
     }
 
     float IHitter.GetDamage()

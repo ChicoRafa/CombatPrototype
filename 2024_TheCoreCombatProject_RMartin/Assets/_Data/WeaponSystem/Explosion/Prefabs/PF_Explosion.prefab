@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3577916719228131203}
   - component: {fileID: 5361189273162152742}
   - component: {fileID: 4644295499132580001}
+  - component: {fileID: 385010025918452044}
   m_Layer: 0
   m_Name: PF_Explosion
   m_TagString: Untagged
@@ -50,10 +51,10 @@ MonoBehaviour:
   explosionForce: 2000
   targetLayerMask:
     serializedVersion: 2
-    m_Bits: 59
+    m_Bits: 256
   occluderLayerMask:
     serializedVersion: 2
-    m_Bits: 59
+    m_Bits: 0
   visualExplosionPrefab: {fileID: 5966334356022416328, guid: afff685e0da0e734bac0c41dbbea85c3, type: 3}
 --- !u!82 &4644295499132580001
 AudioSource:
@@ -152,3 +153,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &385010025918452044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7674609639367525634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e35474917b68f498b1c6640299ab49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 4
+  affectedTags:
+  - Enemy
+  OnHit:
+    m_PersistentCalls:
+      m_Calls: []

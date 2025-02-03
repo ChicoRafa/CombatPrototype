@@ -7,4 +7,9 @@ public class BarrelByInstantiation : BarrelBase
     {
         Instantiate(projectile, transform.position, transform.rotation);
     }
+
+    public override void OnShootTarget(GameObject target)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -15,4 +15,5 @@ public abstract class BarrelBase : MonoBehaviour
         }
     }
     public abstract void OnShoot();
+    public abstract void OnShootTarget(GameObject target);
 }

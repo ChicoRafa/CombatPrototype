@@ -1,9 +1,31 @@
 using UnityEngine;
 
-public class WeaponMartialArts : WeaponBase
+public class WeaponMelee_MartialArts : WeaponBase
 {
+    private void OnEnable()
+    {
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            animationEventForwarder.onMeleeAttackEvent.AddListener(OnMeleeAttackEvent);
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (AnimationEventForwarder animationEventForwarder in GetComponentsInChildren<AnimationEventForwarder>())
+        {
+            animationEventForwarder.onMeleeAttackEvent.RemoveListener(OnMeleeAttackEvent);
+        }
+    }
+
+    private void OnMeleeAttackEvent()
+    {
+        // Implement the attack logic here
+        Debug.Log("Melee attack event received");
+    }
+
     internal override void PerformAttack()
     {
-        //Managed by PlayerController, but it may be relocated to here in the future
+        throw new System.NotImplementedException();
     }
 }

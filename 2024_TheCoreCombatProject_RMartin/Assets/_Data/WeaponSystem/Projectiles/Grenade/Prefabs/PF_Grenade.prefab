@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8645324969885007891}
   - component: {fileID: 2083783937828040015}
   - component: {fileID: 6904835197946313718}
+  - component: {fileID: 6044693526894729475}
   m_Layer: 0
   m_Name: Grenade
   m_TagString: Untagged
@@ -139,11 +140,34 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: ffe1f8b2f20c9844fb622ee33f170c88, type: 3}
+--- !u!136 &6044693526894729475
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479962644704173305}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 257
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.4349855
+  m_Height: 3.8973422
+  m_Direction: 1
+  m_Center: {x: 0.10041046, y: 0.27268106, z: -0.13382947}
 --- !u!1 &5181378714175091282
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,7 +179,7 @@ GameObject:
   - component: {fileID: 5148257772483038891}
   - component: {fileID: 2612806131191223341}
   - component: {fileID: 1293587031780401550}
-  - component: {fileID: 5143594460323810092}
+  - component: {fileID: 5898479716215224093}
   m_Layer: 0
   m_Name: PF_Grenade
   m_TagString: Untagged
@@ -191,10 +215,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e1348343855e104bb5fc67ce2c325de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSpeed: 10
+  startSpeed: 4
   explosionPrefab: {fileID: 7674609639367525634, guid: 1ec34a9c4f7790a429992b9fdced6545, type: 3}
-  timeToDieAfterCollision: 3
-  lifeTime: 20
+  timeToDieAfterCollision: 1
+  lifeTime: 10
 --- !u!54 &1293587031780401550
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -211,7 +235,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -222,11 +246,33 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!33 &5143594460323810092
-MeshFilter:
+--- !u!114 &5898479716215224093
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5181378714175091282}
-  m_Mesh: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e35474917b68f498b1c6640299ab49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 4
+  affectedTags:
+  - Enemy
+  OnHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

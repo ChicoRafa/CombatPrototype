@@ -5,7 +5,7 @@ public class WaveManager : MonoBehaviour
 {
     [SerializeField] Transform objectsToActivateOnStartParent;
     Wave[] waves;
-    WaveStartTrigger waveStartTrigger;
+    EventStartTrigger eventStartTrigger;
     public UnityEvent onWavesFinished;
     
     bool alreadyStarted = false;
@@ -13,7 +13,7 @@ public class WaveManager : MonoBehaviour
     private void Awake()
     {
         waves = GetComponentsInChildren<Wave>(true);
-        waveStartTrigger = GetComponentInChildren<WaveStartTrigger>();
+        eventStartTrigger = GetComponentInChildren<EventStartTrigger>();
     }
 
     private void OnEnable()
@@ -22,7 +22,7 @@ public class WaveManager : MonoBehaviour
         {
             wave.onWaveEnded.AddListener(OnWaveEnded);
         }
-        waveStartTrigger.onTriggered.AddListener(OnWaveStartTriggered);
+        eventStartTrigger.onTriggered.AddListener(OnWaveStartTriggered);
     }
     
     private void OnDisable()
@@ -31,7 +31,7 @@ public class WaveManager : MonoBehaviour
         {
             wave.onWaveEnded.RemoveListener(OnWaveEnded);
         }
-        waveStartTrigger.onTriggered.RemoveListener(OnWaveStartTriggered);
+        eventStartTrigger.onTriggered.RemoveListener(OnWaveStartTriggered);
     }
 
     private void OnWaveStartTriggered()

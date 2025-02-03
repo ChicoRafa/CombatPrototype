@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +8,16 @@ public class LifeCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        entityLife.onLifeChanged.AddListener(OnLifeChanged);
+        entityLife?.onLifeChanged.AddListener(OnLifeChanged);
     }
     
     private void OnDisable()
     {
-        entityLife.onLifeChanged.RemoveListener(OnLifeChanged);
+        entityLife?.onLifeChanged.RemoveListener(OnLifeChanged);
     }
 
     private void OnLifeChanged(float newLifeValue)
     {
-        lifeBar.fillAmount = newLifeValue;
+        lifeBar.fillAmount = newLifeValue / entityLife.GetMaxLife();
     }
 }

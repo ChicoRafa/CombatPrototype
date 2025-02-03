@@ -17,12 +17,20 @@ public abstract class WeaponBase : MonoBehaviour
      {
          gameObject.SetActive(false);
          audioSource = GetComponent<AudioSource>();
+         Animator animator = GetComponent<Animator>();
+         if (animator != null)
+         {
+             animator.SetBool("IsFighting", false);
+         }
      }
     internal virtual void Select(Animator animator)
      {
             gameObject.SetActive(true);
             animator.runtimeAnimatorController = animatorOverrideController;
-            animator.SetBool("IsFighting", activateFighting);
+            if (!(this is Weapon_FireWeapon))
+            {
+                animator.SetBool("IsFighting", activateFighting);
+            }
             animator.SetInteger("ComboLength", comboLenght);
      }
     internal virtual void Deselect(Animator animator)

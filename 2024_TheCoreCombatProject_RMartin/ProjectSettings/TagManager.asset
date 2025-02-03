@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Barrel
   - Enemy
+  - Life
+  - Ammo
   layers:
   - Default
   - TransparentFX
@@ -14,8 +16,8 @@ TagManager:
   - Water
   - UI
   - WaveTrigger
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 
