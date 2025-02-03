@@ -142,24 +142,24 @@ public class Weapon_FireWeapon : WeaponBase
     
     public void ShootToTarget(GameObject target)
     {
-        if (isReloading || currentAmmo <= 0)
-        {
-            return;
-        }
-
+        // if (isReloading || currentAmmo <= 0)
+        // {
+        //     return;
+        // }
         AimAtTarget(target);
 
         foreach (BarrelBase barrelBase in barrels)
         {
             barrelBase.OnShootTarget(target);
+            audioSource.Play();
         }
 
-        currentAmmo--;
-        weaponManager.UpdateAmmoText(this);
-        if (currentAmmo <= 0)
-        {
-            StartReloading();
-        }
+       // currentAmmo--;
+        //weaponManager.UpdateAmmoText(this);
+        // if (currentAmmo <= 0)
+        // {
+        //     StartReloading();
+        // }
     }
 
     private void AimAtTarget(GameObject target)
